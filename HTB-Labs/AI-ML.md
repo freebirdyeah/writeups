@@ -2,15 +2,15 @@
 
 ## Uplink Artifact
 
-Description: 
+### Description: 
 
 > During an analysis of a compromised satellite uplink, a suspicious dataset was recovered. Intelligence indicates it may encode physical access credentials hidden within the spatial structure of Volnaya’s covert data infrastructure. 
 
-Files Given:
+### Files Given:
 
 - uplink_spatial_auth.csv
 
-Method:
+### Method:
 
 1. I did basic EDA of the `.csv` file, used `df.describe()` and checked the `corr` matrix. I noticed the `.csv` only has 4 labels from 0-3
 
@@ -20,7 +20,7 @@ Method:
 
 4. I set `z=0` for all points with `label` as `1` by using the following script:
 
-```
+```python
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -51,3 +51,16 @@ plt.show()
 5. The QR code was clear this time. Scanned it.
 
 FLAG: `HTB{clu5t3r_k3y_l34k3d}` 
+
+## Loyalty Survey
+
+### Description:
+
+>
+
+### Files Given:
+
+
+### Method:
+
+
