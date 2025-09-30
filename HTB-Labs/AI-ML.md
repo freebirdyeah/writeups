@@ -307,7 +307,7 @@ Miami:   (x: 7,   y: -2)
 
 got GPT to make me a simple script:
 
-```
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
@@ -472,7 +472,7 @@ print("="*60)
 ```
 4. this misclassified only `2`, did all of this in docker:
 
-```
+```bash
 ~$ ./build_docker.sh
 ~$ docker cp solve.py misc_fuel_crisis:/challenge/fine_tune_phalcon.py
 ~$ docker exec -it misc_fuel_crisis bash -lc "python3 /challenge/fine_tune_phalcon.py"
@@ -629,5 +629,127 @@ flag: `HTB{1s_th15_NLP_pOw3r3d_SQLi}`
 
 flag: `HTB{c0ngr4tul4t10ns_0n_y0ur_j0urn3y_us3_th3_f1r3_wis3ly}`
 
+## Lost in Hyperspace
 
+### Challenge Description: 
+
+> A cube is the shadow of a tesseract casted on 3 dimensions. I wonder what other secrets may the shadows hold.
+
+### Files given:
+
+- `token_embeddings.npz` --> `token.npz` and `embeddings.npz`
+
+### Methods:
+
+1. At first I used an exploratory script to analyse the two arrays:
+
+
+```python
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Load the data
+tokens = np.load("tokens.npy")
+embeddings = np.load("embeddings.npy")
+
+print(f"Tokens shape: {tokens.shape}")
+print(f"Embeddings shape: {embeddings.shape}")
+
+# Check norms of embeddings
+norms = np.linalg.norm(embeddings, axis=1)
+print(f"Embedding norms: min={norms.min()}, max={norms.max()}, mean={norms.mean():.2f}")
+
+# Example: find nearest neighbor of first token
+similarities = cosine_similarity(embeddings[0:1], embeddings)[0]
+nearest_idx = similarities.argsort()[-5:][::-1]  # top 5 closest
+print("Nearest neighbors to first token:")
+for idx in nearest_idx:
+    print(f"{tokens[idx]}: {similarities[idx]:.3f}")
+
+# Optional: 2D visualization using PCA
+pca = PCA(n_components=2)
+proj = pca.fit_transform(embeddings)
+plt.figure(figsize=(8,6))
+plt.scatter(proj[:,0], proj[:,1], s=5, alpha=0.6)
+plt.title("PCA projection of embeddings")
+plt.show()
+```
+
+which gave me the shape of the arrays, nearest neighbour of the first token (characters `H`, `_` and `T` made me suspect a flag sequence) and 2D PCA breakdown (which looked like a spiral):
+
+2. I figured that the flag is to be extracted from the `tokens.npy`, at this stage I literally asked ChatGPT for "a creative solution" and it suggested a walk where the token with closest similarity is selected and appended to the sequence and marked visited.
+
+3. I used the following script to accomplish that:
+
+
+```python
+
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load data
+tokens = np.load("tokens.npy")
+embeddings = np.load("embeddings.npy")
+
+# Normalize embeddings for cosine similarity
+emb_norm = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+
+visited = set()
+sequence = []
+
+current_idx = 0  # start with first token
+visited.add(current_idx)
+sequence.append(tokens[current_idx])
+
+for _ in range(len(tokens)-1):
+    # Compute cosine similarity with all other tokens
+    sims = emb_norm[current_idx] @ emb_norm.T
+    # Mask already visited
+    sims[list(visited)] = -1
+    # Pick the next closest token
+    next_idx = np.argmax(sims)
+    visited.add(next_idx)
+    sequence.append(tokens[next_idx])
+    current_idx = next_idx
+
+# Join into a string
+message = ''.join(sequence)
+print("Hyper-walk
+
+```
+
+4. It actually worked lol, message: `TH3_SP1R4L}7}SFDCE123____HTB{L0ST_1N_XZAVPFD{{HYTRBW8IRPLH59}7}EVBNMC548QETRUOF{!-4!DSIFEVOKEPNMBZ#564W4XALGUI`
+
+flag: `HTB{L0ST_1N_TH3_SP1R4L}`
+
+## Death's Glance
+
+
+### Challenge Description: 
+
+> You find yourself in the possession of an ancient forbidden spell. Rumors have it that by revealing the rune originated from the spell, the mystery behind the way you perish will be unveiled and sealed!
+
+
+### Files given:
+
+- 
+
+
+### Methods:
+
+
+## Battle in OrIOn
+
+### Challenge Description:
+
+> The spaceship cruiser has been hit! Ramona must hurry and check if the central system is intact! The enemy must have used electromagnetic wave canons! The spaceship's sensors are going crazy and the autopilot system broke down! There is no chance to turn back the enemy will be waiting... But there is a meteor shower ahead! In order to get through safely, the spaceship's power and consumption need to be balanced. Both the laser canons and the thrusters are vital parts for this... And she has to control them manually! Quickly! Ramona needs to upload a valid configuration file to overwrite the values of all sensors on board. The onboard neural network will verify that the new configuration leads to the required power distribution. Attention! The values of the sensors must be at least 99.99% accurate for this to work! Hurry now, time is running out!
+
+### Files given:
+
+- model.pth: Zip archive data, at least v0.0 to extract, compression method=store
+- net.py:    Python script, ASCII text executable
+
+### Method:
 
