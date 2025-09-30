@@ -496,6 +496,8 @@ flag: `HTB{4ttack1ng_l4st_l4yers}`
 
 ### Methods:
 
+1. Challenge writeup *WIP*
+
 ## **Doctrine Studio
 
 ### Challenge Description:
