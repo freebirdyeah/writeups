@@ -1,3 +1,3 @@
 # Cybersecurity and CTFs
 
-All cybersecurity, CTF writeups and other stuff I do over the course of 2025 will go here
+All cybersecurity work and CTF writeups by Cryptonite AI Research members goes here :)
