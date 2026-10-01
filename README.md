@@ -1,3 +1,3 @@
-# Cybersecurity and CTFs
+# writeups
 
-All cybersecurity work and CTF writeups by Cryptonite AI Research members goes here :)
+CTF writeups by me :)
